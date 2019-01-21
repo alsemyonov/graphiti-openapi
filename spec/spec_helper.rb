@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "graphiti/openapi"
+require "graphiti/open_api"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
