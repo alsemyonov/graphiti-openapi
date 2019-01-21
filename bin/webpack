@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+ENV["RAILS_ENV"] ||= ENV["RACK_ENV"] || "development"
+ENV["NODE_ENV"] ||= "development"
+
+ENGINE_ROOT = File.expand_path('..', __dir__)
+ENGINE_PATH = File.expand_path('../lib/graphiti/open_api/engine', __dir__)
+APP_PATH = File.expand_path('../spec/dummy/config/application', __dir__)
+
+# Set up gems listed in the Gemfile.
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
+require 'bundler/setup' if File.exist?(ENV['BUNDLE_GEMFILE'])
+
+require_relative '../spec/dummy/config/boot'
+Dir.chdir 'spec/dummy' do
+  system "bin/rails yarn:install" unless File.file?("node_modules/.bin/webpack")
+  require "webpacker"
+  require "webpacker/webpack_runner"
+  Webpacker::WebpackRunner.run(ARGV)
+end

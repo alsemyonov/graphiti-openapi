@@ -1,0 +1,11 @@
+{
+  "name": "dummy",
+  "private": true,
+  "dependencies": {
+    "@rails/webpacker": "3.5",
+    "swagger-ui": "^3.20.5"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "2.11.2"
+  }
+}

@@ -1,0 +1,66 @@
+openapi: 3.0.1
+info:
+  title: My API
+  version: 0.0.1
+  # description: API description
+  # termsOfService: /tos
+  contact:
+    email: developer@example.test
+    name: Developer Example
+    # url: 'https://developer.example.test/'
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    '200':
+      description: OK
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/jsonapi_info'
+    '202':
+      description: Accepted
+    '204':
+      description: No Content
+    '400':
+      description: Bad Request
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/jsonapi_failure'
+    '401':
+      description: Unauthorized
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/jsonapi_failure'
+    '403':
+      description: Forbidden
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/jsonapi_failure'
+    '404':
+      description: Not Found
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/jsonapi_failure'
+    '409':
+      description: Conflict
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/jsonapi_failure'
+    '422':
+      description: Unprocessable Entity
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/jsonapi_failure'
+paths:
