@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Alex Semyonov"]
   spec.email = ["alex@semyonov.us"]
 
-  spec.summary = %q{Expose Graphiti API as OpenAPI specification}
+  spec.summary = %q{OpenAPI 3.0 specification for your (Graphiti) JSON:API}
   spec.description = spec.summary
   spec.homepage = "https://github.com/alsemyonov/graphiti-openapi"
 

@@ -1,12 +1,10 @@
 # Graphiti::OpenAPI
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/graphiti/open_api`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+OpenAPI 3.0 specification for your ([Graphiti](https://github.com/graphiti-api/graphiti)) JSON:API
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this line to your Rails application's Gemfile:
 
 ```ruby
 gem 'graphiti-openapi'
@@ -18,15 +16,19 @@ And then execute:
 bundle
 ```
 
-Or install it yourself as:
+Set up environment running
 
 ```bash
-gem install graphiti-openapi
+bin/rails graphiti:openapi:install
 ```
+
+Configure OpenAPI template in `config/openapi.yml` and Graphiti::OpenAPI will pick your resources schema and
+translate it to OpenAPI 3.0 JSON and YAML files, providing Swagger UI with live API documentation.
 
 ## Usage
 
-TODO: Write usage instructions here
+Edit template in `config/openapi.yml` to customize your OpenAPI output. This file will be used as base for resulting
+document.
 
 ## Development
 
