@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require "open-uri"
+require "pathname"
 
 jsonapi_schema = 'public/schemas/jsonapi.json'
 
@@ -12,7 +14,7 @@ namespace :graphiti do
       system "#{RbConfig.ruby} ./bin/rails app:template LOCATION=#{installer_template}"
     end
 
-    task generate: :environment do
+    task generate: %W[environment #{jsonapi_schema}] do
       generator = Graphiti::OpenAPI::Generator.new
       api = Rails.root.join("public#{ApplicationResource.endpoint_namespace}")
       api.join("openapi.json").write(generator.to_openapi.to_json)
@@ -26,8 +28,6 @@ namespace :assets do
 end
 
 file jsonapi_schema do |t|
-  require 'open-uri'
-
-  # mkdir_p(File.dirname(t.name))
+  Pathname(t.name).dirname.mkpath
   File.write(t.name, open('http://jsonapi.org/schema').read)
 end
