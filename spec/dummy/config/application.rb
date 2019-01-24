@@ -23,10 +23,11 @@ module Dummy
     # the rails server settings.
     # Rails::Server is not defined in console or rake tasks, so this will only
     # use those defaults when they are available.
+    routes.default_url_options[:protocol] = "https"
     routes.default_url_options[:host] = ENV.fetch("HOST") do
       if defined?(Rails::Server)
         argv_options = Rails::Server::Options.new.parse!(ARGV)
-        "http://#{argv_options[:Host]}:#{argv_options[:Port]}"
+        "#{argv_options[:Host]}:#{argv_options[:Port]}"
       end
     end
 

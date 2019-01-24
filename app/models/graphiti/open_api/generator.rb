@@ -51,7 +51,7 @@ module Graphiti::OpenAPI
       template = template_source.data
       data = {
         openapi: "3.0.1",
-        servers: [{url: Rails.application.routes.default_url_options[:host], description: "#{Rails.env} server"}],
+        servers: servers,
         tags: tags,
         paths: paths,
         components: {
@@ -75,6 +75,15 @@ module Graphiti::OpenAPI
     end
 
     private
+
+    def servers
+      [{url: "#{root_url}#{ApplicationResource.endpoint_namespace}", description: "#{Rails.env} server"}]
+    end
+
+    def root_url
+      url_options = Rails.application.routes.default_url_options
+      "#{url_options[:protocol]}://#{url_options[:host]}"
+    end
 
     def tags
       resources.values.map do |resource|
@@ -169,6 +178,6 @@ module Graphiti::OpenAPI
       PREFIX_JSONAPI_DEFINITIONS[defs]
     end
 
-    memoize :jsonapi_source, :jsonapi_definitions, :schema_source, :schema, :template_source
+    memoize :jsonapi_source, :jsonapi_definitions, :schema_source, :schema, :template_source, :root_url
   end
 end
