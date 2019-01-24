@@ -12,6 +12,7 @@ module Graphiti::OpenAPI
     TYPES_MAP = Hash.new do |hash, type|
       hash[type] = {type: type}
     end.merge(
+      big_decimal: {type: :numeric, format: :decimal},
       hash: {type: :object, additionalProperties: true},
       datetime: {type: :string, format: :'date-time'},
       date: {type: :string, format: :date},
