@@ -6,7 +6,7 @@ module Graphiti::OpenAPI
       respond_to do |format|
         format.html
         format.json { render json: generator.to_openapi }
-        format.yaml { render text: generator.to_openapi(format: :yaml) }
+        format.yaml { render text: generator.to_openapi(format: :yaml), layout: nil }
       end
     end
 
