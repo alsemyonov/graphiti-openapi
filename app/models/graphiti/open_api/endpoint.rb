@@ -17,6 +17,10 @@ module Graphiti::OpenAPI
     attribute :schema, Types::Any
     attribute :path, Types::Coercible::String
 
+    def path
+      __attributes__[:path].gsub(/^#{Regexp.escape(ApplicationResource.endpoint_namespace)}/, '')
+    end
+
     def resource_path
       File.join(path.to_s, "{id}")
     end
@@ -59,7 +63,7 @@ module Graphiti::OpenAPI
       actions.select(&:collection?)
     end
 
-    memoize :resource_path, :paths, :parameters, :resource, :resource_actions, :collection_actions
+    memoize :path, :resource_path, :paths, :parameters, :resource, :resource_actions, :collection_actions
   end
 
   class Endpoints < Hash
