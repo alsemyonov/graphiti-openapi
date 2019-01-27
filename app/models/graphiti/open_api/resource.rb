@@ -174,30 +174,50 @@ module Graphiti::OpenAPI
       {
         "#{type}_single" => {
           type: :object,
-          allOf: [
-            {'$ref': "#/components/schemas/jsonapi_success"},
-            {
-              type: :object,
-              properties: {
-                data: {'$ref': "#/components/schemas/#{type}_resource"},
-              },
+          properties: {
+            data: {'$ref': "#/components/schemas/#{type}_resource"},
+            included: {
+              description: "To reduce the number of HTTP requests, servers **MAY** allow responses that include related resources along with the requested primary resources. Such responses are called \"compound documents\".",
+              type: "array",
+              items: {'$ref': "#/components/schemas/jsonapi_resource"},
+              uniqueItems: true
             },
-          ],
+            meta: {'$ref': "#/components/schemas/jsonapi_meta"},
+            links: {
+              description: "Link members related to the primary data.",
+              allOf: [
+                {"$ref": "#/components/schemas/jsonapi_links"},
+                {"$ref": "#/components/schemas/jsonapi_pagination"},
+              ]
+            },
+            "jsonapi": {"$ref": "#/components/schemas/jsonapi_jsonapi"},
+          },
+          additionalProperties: false
         },
         "#{type}_collection" => {
           type: :object,
-          allOf: [
-            {'$ref': "#/components/schemas/jsonapi_success"},
-            {
-              type: :object,
-              properties: {
-                data: {
-                  type: :array,
-                  items: {"$ref" => "#/components/schemas/#{type}_resource"},
-                },
-              },
+          properties: {
+            data: {
+              type: "array",
+              items: {'$ref': "#/components/schemas/#{type}_resource"},
             },
-          ],
+            included: {
+              description: "To reduce the number of HTTP requests, servers **MAY** allow responses that include related resources along with the requested primary resources. Such responses are called \"compound documents\".",
+              type: "array",
+              items: {'$ref': "#/components/schemas/jsonapi_resource"},
+              uniqueItems: true
+            },
+            meta: {'$ref': "#/components/schemas/jsonapi_meta"},
+            links: {
+              description: "Link members related to the primary data.",
+              allOf: [
+                {"$ref": "#/components/schemas/jsonapi_links"},
+                {"$ref": "#/components/schemas/jsonapi_pagination"},
+              ]
+            },
+            "jsonapi": {"$ref": "#/components/schemas/jsonapi_jsonapi"},
+          },
+          additionalProperties: false
         },
       }
     end
@@ -209,7 +229,7 @@ module Graphiti::OpenAPI
           properties: {
             data: {'$ref': "#/components/schemas/#{type}_resource"},
           },
-        # xml: {name: :data},
+          # xml: {name: :data},
         },
       }
     end
@@ -252,7 +272,7 @@ module Graphiti::OpenAPI
           description: "OK: #{human} resource",
           content: {
             "application/vnd.api+json" => {schema: {"$ref": "#/components/schemas/#{type}_single"}},
-          # "application/xml" => {schema: {"$ref": "#/components/schemas/#{type}_single"}},
+            # "application/xml" => {schema: {"$ref": "#/components/schemas/#{type}_single"}},
           },
           links: link_refs,
         },
@@ -260,14 +280,14 @@ module Graphiti::OpenAPI
           description: "OK: #{plural_human} collection",
           content: {
             "application/vnd.api+json" => {schema: {"$ref": "#/components/schemas/#{type}_collection"}},
-          # "application/xml" => {schema: {"$ref": "#/components/schemas/#{type}_collection"}},
+            # "application/xml" => {schema: {"$ref": "#/components/schemas/#{type}_collection"}},
           },
         },
         "#{type}_201" => {
           description: "Created",
           content: {
             "application/vnd.api+json" => {schema: {"$ref": "#/components/schemas/#{type}_single"}},
-          # "application/xml" => {schema: {"$ref": "#/components/schemas/#{type}_single"}},
+            # "application/xml" => {schema: {"$ref": "#/components/schemas/#{type}_single"}},
           },
           links: link_refs,
         },

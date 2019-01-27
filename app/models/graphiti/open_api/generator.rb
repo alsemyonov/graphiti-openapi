@@ -160,6 +160,7 @@ module Graphiti::OpenAPI
 
       # Use real resources in examples
       defs[:resource] = {
+        type: :object,
         oneOf: resources.values.map { |resource| {'$ref': "#/components/schemas/#{resource.type}_resource"} },
       }
 
