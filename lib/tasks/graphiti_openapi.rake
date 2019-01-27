@@ -14,6 +14,7 @@ namespace :graphiti do
       system "#{RbConfig.ruby} ./bin/rails app:template LOCATION=#{installer_template}"
     end
 
+    desc "Generate OpenAPI files in public/"
     task generate: %W[environment #{jsonapi_schema}] do
       generator = Graphiti::OpenAPI::Generator.new
       api = Rails.root.join("public#{ApplicationResource.endpoint_namespace}")
