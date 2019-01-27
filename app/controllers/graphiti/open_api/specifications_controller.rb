@@ -4,7 +4,9 @@ module Graphiti::OpenAPI
   class SpecificationsController < ApplicationController
     def index
       respond_to do |format|
-        format.html
+        format.html do
+          return render 'redoc' if params[:skin] == 'redoc'
+        end
         format.json { render json: generator.to_openapi }
         format.yaml { render text: generator.to_openapi(format: :yaml), layout: nil }
       end
