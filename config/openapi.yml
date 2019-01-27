@@ -9,13 +9,42 @@ info:
     name: Developer Example
     # url: 'https://developer.example.test/'
 security:
-  - bearerAuth: []
+  - Basic: []
+  - BearerJWT: []
+  - OAuth2:
+    - manage
+    - read
+      write
+    - read
+      create
+      update
+      delete
 components:
   securitySchemes:
-    bearerAuth:
+    Basic:
+      type: http
+      scheme: basic
+    BearerJWT:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    OAuth2:
+      type: oauth2
+      description: |
+        [OAuth 2.0 protocol](http://oauth.net/2/)
+        See /oauth/requests
+      flows:
+        password:
+          tokenUrl: /oauth/token
+          scopes:
+            public: Grant read-only access to all public data
+            read: Grant read-only access to all your data
+            write: Grant write-only access to all your data except for the account and user info
+            create: Grant write-only access to create anything
+            update: Grant write-only access to update all your data
+            delete: Grant write-only access to delete any of your data
+            manage: Grant read and write access to all your data
+            profile: Grant read-only access to the account and user info only
   responses:
     '200':
       description: OK
@@ -63,4 +92,169 @@ components:
         application/vnd.api+json:
           schema:
             $ref: '#/components/schemas/jsonapi_failure'
+  schemas:
+    OAuth2Scope:
+      type: string
+      enum: [public, read, write, create, update, delete, manage]
+      default: public
+    OAuth2Scopes:
+      type: array
+      items:
+        $ref: "#/components/schemas/OAuth2Scope"
+      default: [public]
+    OAuth2GrantType:
+      type: string
+      enum: [password, authorization_code]
+    OAuth2TokenRequest:
+      type: object
+      required:
+        - grant_type
+      properties:
+        grant_type:
+          $ref: "#/components/schemas/OAuth2GrantType"
+        scope:
+          $ref: "#/components/schemas/OAuth2Scopes"
+        username:
+          description: (when `grant_type="password"`)
+          type: string
+          format: email
+        password:
+          description: (when `grant_type="password"`)
+          type: string
+          format: password
+        client_id:
+          description: (when `grant_type="authorization_code"`)
+          type: string
+        client_secret:
+          description: (when `grant_type="authorization_code"`)
+          type: string
+        code:
+          description: (when `grant_type="authorization_code"`)
+          type: string
+        redirect_uri:
+          description: (when `grant_type="authorization_code"`)
+          type: string
+          format: uri
+          default: "urn:ietf:wg:oauth:2.0:oob"
+      additionalProperties: false
+    OAuth2Response:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjEsImlhdCI6MTU0ODU1OTMwNiwianRpIjoiZTc4MWZlYjUtNWYxNi00YzRlLWFjOWMtOTBlYTA2YWMwZWVjIiwiaW5mIjp7ImVtYWlsIjoiYWxleEBjZXJlYmVsby5zcGFjZSJ9fQ."
+        created_at:
+          type: integer
+          example: 1548559306
+        expires_in:
+          type: integer
+          example: 7200
+        scope:
+          type: string
+          example: "manage"
+        token_type:
+          type: string
+          enum: [Bearer]
+
+  examples:
+    OAuth2AuthorizationCodeRequest:
+      summary: Authorization Code Flow Request Body
+      value:
+        grant_type: authorization_code
+        code: "eyJhbGciOiJIUzUxMiJ9"
+        client_id: "123"
+        client_secret: "very-secret"
+        redirect_uri: "https://example.test/oauth/redirect"
+    OAuth2PasswordRequest:
+      summary: Resource Owner Password Credentials Flow Request Body
+      value:
+        grant_type: password
+        username: user@example.test
+        password: password
+    invalid_request:
+      summary: Missing required parameter
+      value:
+        error: invalid_request
+        error_description: The request is missing a required parameter, includes an unsupported parameter value, or is otherwise malformed.
+    authentication:
+      summary: Invalid credentials
+      value:
+        error: Invalid Email or password.
+
+  requestBodies:
+    OAuth2Request:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: "#/components/schemas/OAuth2TokenRequest"
+          encoding:
+            scope:
+              style: spaceDelimited
+              explode: false
+          examples:
+            OAuth2AuthorizationCodeRequest:
+              $ref: "#/components/examples/OAuth2AuthorizationCodeRequest"
+            OAuth2PasswordRequest:
+              $ref: "#/components/examples/OAuth2PasswordRequest"
+
 paths:
+  /oauth/token:
+    post:
+      operationId: getOAuth2Token
+      tags:
+        - OAuth2.0
+      description: REtrieve OAuth 2.0 AccessToken
+      requestBody:
+        $ref: "#/components/requestBodies/OAuth2Request"
+      responses:
+        '200':
+          description: OAuth 2.0 Access Token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuth2Response"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                properties:
+                  error:
+                    type: string
+                  error_description:
+                    type: string
+              examples:
+                invalid_request:
+                  $ref: "#/components/examples/invalid_request"
+                authentication:
+                  $ref: "#/components/examples/authentication"
+  # /oauth/revoke:
+  #   post:
+  #     tags:
+  #       - OAuth2.0
+  #     description: |
+  #       [OAuth 2.0 Token Revocation](http://tools.ietf.org/html/rfc7009)
+  #     responses:
+  # /oauth/introspect:
+  #   post:
+  #     tags:
+  #       - OAuth2.0
+  #     description: |
+  #       [OAuth 2.0 Token Introspection](http://tools.ietf.org/html/rfc7662)
+  #     parameters:
+  #       - name: token
+  #         in: body
+  #         required: true
+  #         schema:
+  #           type: string
+  #       - name: token_type_hint
+  #         in: body
+  #     responses:
+tags:
+  - name: OAuth2.0
+    description: |
+      [OAuth 2.0 protocol](http://oauth.net/2/)
