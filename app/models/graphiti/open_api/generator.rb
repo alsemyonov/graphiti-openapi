@@ -77,7 +77,7 @@ module Graphiti::OpenAPI
     private
 
     def servers
-      [{url: "#{root_url}#{ApplicationResource.endpoint_namespace}", description: "#{Rails.env} server"}]
+      [{url: root_url, description: "#{Rails.env} server"}]
     end
 
     def root_url
