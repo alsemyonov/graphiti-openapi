@@ -6,4 +6,14 @@ RSpec.describe Graphiti::OpenAPI::Generator do
   its(:resources) { is_expected.to be_a Graphiti::OpenAPI::Resources }
   its(:endpoints) { is_expected.to be_a Hash }
   its(:types) { is_expected.to be_a Hash }
+
+  describe "#to_openapi" do
+    subject(:output) { instance.to_openapi(format: format) }
+
+    context "(format: :yaml)" do
+      let(:format) { :yaml }
+
+      it { is_expected.to match /\Aopenapi:/ }
+    end
+  end
 end

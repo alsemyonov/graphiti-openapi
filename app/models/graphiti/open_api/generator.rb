@@ -68,7 +68,7 @@ module Graphiti::OpenAPI
         specification
       when :yaml
         json = specification.to_json
-        JSON.parse(json).to_yaml
+        JSON.parse(json).to_yaml.gsub(/\A---\s+/, '')
       else
         raise ArgumentError, "Unknown format: `#{format.inspect}`"
       end
