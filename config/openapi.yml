@@ -204,7 +204,7 @@ paths:
       operationId: getOAuth2Token
       tags:
         - OAuth2.0
-      description: REtrieve OAuth 2.0 AccessToken
+      description: Retrieve OAuth 2.0 AccessToken
       requestBody:
         $ref: "#/components/requestBodies/OAuth2Request"
       responses:
