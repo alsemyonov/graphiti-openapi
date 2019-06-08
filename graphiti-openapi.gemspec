@@ -29,8 +29,8 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "activemodel"
   spec.add_runtime_dependency "responders"
   spec.add_runtime_dependency "kaminari"
-  spec.add_runtime_dependency "graphiti", "~> 1.0.rc.7"
-  spec.add_runtime_dependency "dry-struct", "~> 0.6.0"
+  spec.add_runtime_dependency "graphiti", "~> 1.2.0"
+  spec.add_runtime_dependency "dry-struct", "~> 0.7"
   spec.add_runtime_dependency "transproc"
   spec.add_runtime_dependency "webpacker"
 
